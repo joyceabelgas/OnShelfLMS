@@ -1,0 +1,153 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Profile";
+}
+
+<div>
+    <div class="container-pad"></div>
+    <div class="container-page mt-4">
+        <div class="row">
+            <form id="profileForm" method="post" enctype="multipart/form-data">
+                <h5>Personal Information</h5> <hr />
+                <div class="row g-3">
+                    <div class="col-md-3 text-center">
+                        <div class="mb-3 rounded-circle">
+                            <img id="previewImage"
+                                 src="~/images/default-user.png"
+                                 class="img-thumbnail rounded-circle mb-2"
+                                 alt="Profile Image"
+                                 style="width: 150px; height: 150px; object-fit: cover;" />
+
+                            <input type="file"
+                                   id="profileImage"
+                                   name="profileImage"
+                                   accept="image/*"
+                                   class="form-control"
+                                   onchange="previewSelectedImage(event)" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-9 fs-7 fw-semibold">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center mb-2">
+                                    <label for="userId" class="form-label me-2" style="width: 100px;">User ID</label>
+                                    <input id="userId" name="UserId" class="form-control" disabled />
+                                </div>
+
+                                <div class="d-flex align-items-center mb-2">
+                                    <label for="firstName" class="form-label me-2" style="width: 100px;">First Name</label>
+                                    <input id="firstName" name="FirstName" class="form-control" required />
+                                </div>
+
+                                <div class="d-flex align-items-center mb-2">
+                                    <label for="middleName" class="form-label me-2" style="width: 100px;">Middle Name</label>
+                                    <input id="middleName" name="MiddleName" class="form-control" />
+                                </div>
+
+                                <div class="d-flex align-items-center mb-2">
+                                    <label for="lastName" class="form-label me-2" style="width: 100px;">Last Name</label>
+                                    <input id="lastName" name="LastName" class="form-control" required />
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center mb-2">
+                                    <label for="suffix" class="form-label me-2" style="width: 100px;">Suffix</label>
+                                    <select id="suffix" name="Suffix" class="form-select">
+                                        <option value=""></option>
+                                        <option value="Jr">Jr</option>
+                                        <option value="Sr">Sr</option>
+                                        <option value="III">III</option>
+                                        <option value="IV">IV</option>
+                                        <option value="V">V</option>
+                                        <option value="VI">VI</option>
+                                        <option value="VII">VII</option>
+                                        <option value="VIII">VIII</option>
+                                    </select>
+                                </div>
+
+                                <div class="d-flex align-items-center mb-2">
+                                    <label for="address" class="form-label me-2" style="width: 100px;">Address</label>
+                                    <textarea id="address" name="Address" class="form-control" rows="3" style="resize: none;"></textarea>
+                                </div>
+
+                                <div class="d-flex align-items-center mb-2">
+                                    <label for="emailAddress" class="form-label me-2" style="width: 100px;">Email Address</label>
+                                    <input id="emailAddress" name="Email" class="form-control" type="email" />
+                                </div>
+
+                                <div class="d-flex align-items-center mb-2">
+                                    <label for="mobileNumber" class="form-label me-2" style="width: 100px;">Mobile Number</label>
+                                    <input id="mobileNumber" name="MobileNo" class="form-control" type="tel" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-12 mb-3 text-end">
+                        <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <h5>Change Password</h5> <hr />
+
+            <div class="col-md-4 fw-semibold">
+                <form asp-action="ChangePassword" method="post" class="fs-7" id="changePasswordForm">
+                    <div class="d-flex align-items-center mb-2">
+                        <label for="CurrentPassword" class="form-label" style="width: 150px;">Current Password</label>
+                        <div class="flex-grow-1 position-relative">
+                            <input type="password" class="form-control" id="CurrentPassword" name="CurrentPassword" required />
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center mb-2">
+                        <label for="NewPassword" class="form-label" style="width: 150px;">New Password</label>
+                        <div class="flex-grow-1 position-relative">
+                            <input type="password" class="form-control" id="NewPassword" name="NewPassword" required />
+                            <span id="newPassIcon" class="position-absolute top-50 end-0 translate-middle-y me-2"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center mb-2">
+                        <label for="ConfirmPassword" class="form-label" style="width: 150px;">Confirm New Password</label>
+                        <div class="flex-grow-1 position-relative">
+                            <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" required />
+                            <span id="confirmPassIcon" class="position-absolute top-50 end-0 translate-middle-y me-2"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3 text-end">
+                        <button type="submit" class="btn btn-primary">Change Password</button>
+                    </div>
+
+
+                    @if (TempData["PasswordMessage"] != null)
+                    {
+                        <div class="alert alert-info mt-3">@TempData["PasswordMessage"]</div>
+                    }
+                </form>
+            </div>
+            <div class="col-md-4">
+                <div id="passwordRequirements" class="small text-muted ms-2 mt-2 fs-7 mb-3">
+                    <ul class="mb-0">
+                        <li id="charLength" class="text-danger">At least 8 characters</li>
+                        <li id="upperCase" class="text-danger">At least 1 uppercase letter</li>
+                        <li id="numberCheck" class="text-danger">At least 1 number</li>
+                        <li id="specialChar" class="text-danger">At least 1 special character</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+@Html.Partial("_CustomAlert")
+
+<script src="~/js/jquery-3.3.6.0.min.js"></script>
+<script src="~/js/profile.js"></script>

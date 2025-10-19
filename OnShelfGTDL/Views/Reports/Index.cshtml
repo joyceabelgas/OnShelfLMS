@@ -1,0 +1,90 @@
+﻿@model List<OnShelfGTDL.Models.BorrowedBookWithFinesModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Reports";
+}
+<div>
+    <div class="container-pad">
+    </div>
+    <div class="container-page mt-3">
+        <!-- Summary Cards -->
+
+        <!-- Filters -->
+        <div class="card-dashboard p-3 mb-3 flex-fill">
+            <div class="row">
+                <div class="col-md-3 p-2 text-start">
+                    <label class="fw-semibold">Date Range</label>
+                    <select class="form-select" name="DateRange" id="dateFilterSelector">
+                        <option value="Today">Today</option>
+                        <option value="Yesterday">Yesterday</option>
+                        <option value="Last 7 Days">Last 7 Days</option>
+                        <option value="Last 30 Days">Last 30 Days</option>
+                        <option value="This Week">This Week</option>
+                        <option value="Last Week">Last Week</option>
+                        <option value="This Month">This Month</option>
+                        <option value="Last Month">Last Month</option>
+                    </select>
+                </div>
+                <div class="col-md-3 p-2 text-start">
+                    <label class="fw-semibold">Status</label>
+                    <select class="form-select" name="Status" id="ddlStatus">
+                        <option value="Borrowed">Borrowed</option>
+                        <option value="Overdue">Overdue</option>
+                        <option value="Returned">Returned</option>
+                        <option value="Reserved">Reserved</option>
+                    </select>
+                </div>
+                <div class="col-md-3 p-2 text-start">
+                    <label class="fw-semibold">Category</label>
+                    <select class="form-select" name="Category" id="categorySelector">
+                        <option value="All">All</option>
+                        <option value="Science">Science</option>
+                        <option value="Social Science">Social Science</option>
+                        <option value="English">English</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="Fiction">Fiction</option>
+                        <option value="Mapeh">Mapeh</option>
+                        <option value="General Education">General Education</option>
+                        <option value="PRVE">PRVE</option>
+                        <option value="TLE">TLE</option>
+                        <option value="Filipino">Filipino</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="row tables-section">
+            <div class="col-md-12 mb-2">
+                <div class="table-card">
+                    @* <h5>Book Reports</h5> *@
+                    <div class="table-responsive p-2">
+                        <table id="reportTable" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr id="tableHeaders">
+                                    <!-- Headers will be injected here -->
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <!-- Rows will be injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Download Button -->
+        <div class="text-end mt-3">
+            <a asp-action="DownloadReport" class="btn btn-pink">Download Report</a>
+        </div>
+    </div>
+</div>
+<!-- Loading Spinner (Optional) -->
+<div id="loadingSpinner" style="display:none;">
+    <span>Loading...</span>
+</div>
+@Html.Partial("_CustomAlert")
+
+<script src="~/js/jquery-3.3.6.0.min.js"></script>
+<script src="~/js/reports.js"></script>

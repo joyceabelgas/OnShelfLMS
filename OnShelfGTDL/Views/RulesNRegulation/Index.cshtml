@@ -1,0 +1,67 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Rules and Regulations";
+}
+
+<div>
+    <div class="container-pad">
+    </div>
+    <div class="container-page mt-4">
+        <div class="card custom-card mb-3">
+            <!-- Header triggers collapse -->
+            <div class="card-header custom-card-header d-flex justify-content-between align-items-center"
+                 data-bs-toggle="collapse"
+                 data-bs-target="#rulesCollapse"
+                 aria-expanded="false"  
+                aria-controls="rulesCollapse">
+            <h5 class="mb-0">Rules and Regulations</h5>
+        </div>
+
+            <div id="rulesCollapse" class="collapse fs-7">
+                <ul class="list-group list-group-flush" id="rulesList">
+                    <!-- Rules will be dynamically loaded here -->
+                </ul>
+            </div>
+        </div>
+
+
+
+        <div class="card custom-card mt-4">
+            <div class="card-header custom-card-header">
+                <h5 class="mb-0">Add New Rule</h5>
+            </div>
+            <div class="card-body fs-7">
+                <form id="addRuleForm">
+                    <input type="hidden" id="RuleId" name="Id" />
+
+                    <div class="p-3">
+                        <label class="form-label fw-semibold">Rule Title</label>
+                        <input type="text" class="form-control" name="RuleTitle" placeholder="Rule Title" required>
+                    </div>
+
+                    <div class="p-3">
+                        <label class="form-label fw-semibold">Rule Description</label>
+                        <input type="text" class="form-control mb-2" name="Description1" placeholder="Rule Description" />
+                        <input type="text" class="form-control mb-2" name="Description2" placeholder="Rule Description" />
+                        <input type="text" class="form-control mb-2" name="Description3" placeholder="Rule Description" />
+                        <input type="text" class="form-control mb-2" name="Description4" placeholder="Rule Description" />
+                    </div>
+
+                    <div class="row mb-3 px-3">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-primary" id="btnSave">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@Html.Partial("_CustomAlert")
+@Html.Partial("_ConfirmModal")
+
+<script src="~/js/jquery-3.3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/rulesnregulation.js"></script>

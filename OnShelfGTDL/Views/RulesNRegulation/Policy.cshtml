@@ -1,0 +1,40 @@
+﻿@model List<OnShelfGTDL.Models.RulesNRegulationViewModel>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Rules and Regulations";
+}
+<div>
+    <div class="container-pad">
+    </div>
+    <div class="container-page mt-4">
+        <h3 class="text-center title-header fw-bold">RULES AND REGULATIONS</h3>
+
+        @foreach (var rule in Model)
+        {
+            <div class="card shadow-sm mt-4">
+                <div class="card-body card-rule p-2">
+                    <h5 class="rule-title fw-bold p-2">@rule.RuleTitle</h5>
+                    <ul class="rule-description mb-2">
+                        @if (!string.IsNullOrEmpty(rule.Description1))
+                        {
+                            <li>@rule.Description1</li>
+                        }
+                        @if (!string.IsNullOrEmpty(rule.Description2))
+                        {
+                            <li>@rule.Description2</li>
+                        }
+                        @if (!string.IsNullOrEmpty(rule.Description3))
+                        {
+                            <li>@rule.Description3</li>
+                        }
+                        @if (!string.IsNullOrEmpty(rule.Description4))
+                        {
+                            <li>@rule.Description4</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+    </div>
+</div>

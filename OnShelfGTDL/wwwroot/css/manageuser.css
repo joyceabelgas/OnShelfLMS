@@ -1,0 +1,31 @@
+﻿/*#userForm {
+    display: none;
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: all 0.1s ease;
+}
+
+    #userForm.show {
+        opacity: 1;
+        transform: translateY(0);
+        transition: all 0.9s ease;
+    }
+.ButtonLine {
+    display: none;
+}
+    .ButtonLine.show {
+        display: block;
+    }*/
+
+/*.table thead th {
+    background-color: #b95b84;
+    color: black;
+}*/
+
+/*.table tbody tr {
+    background-color: #febfca;
+}*/
+
+/*.table tbody tr:hover {
+    background-color: #febfca;
+}*/

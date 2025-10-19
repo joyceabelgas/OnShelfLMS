@@ -1,0 +1,49 @@
+﻿@model OnShelfGTDL.Models.LoginModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="~/css/main.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/css/login.css" rel="stylesheet" asp-append-version="true">
+    <title>OnShelfGTDL Login</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body class="bg-pink">
+    <div class="login-container">
+        <img src="~/images/library_logo.png" alt="Library Logo" class="login-logo">
+        <h2 class="login-title">ONSHELFGTDL</h2>
+        <p id="errorMessage" class="text-danger mt-2"></p>
+        <div class="justify-content-center gap-2">
+            <form id="loginForm">
+                <div class="mb-3">
+                    <input type="text" name="Username" id="Username" class="form-control" placeholder="Username" required>
+                </div>
+                <div class="">
+                    <input type="password" name="Password" id="Password" class="form-control" placeholder="Password" required>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 fs-7 text-end">
+                        <a href="#" class="">Forgot Password?</a>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-login w-100">LOGIN</button>
+                <span class="fs-7">Don't have an account? <a href="/Account/Registration" class="">Register?</a></span>
+            </form>
+        </div>
+    </div>
+
+
+    <script src="~/js/jquery-3.3.6.0.min.js"></script>
+    <script src="~/js/login.js"></script>
+
+</body>
+
+</html>

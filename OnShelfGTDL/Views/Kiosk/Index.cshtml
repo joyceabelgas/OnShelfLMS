@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Library Kiosk";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="kiosk-container">
+    <header class="header">
+        <img src="/images/library-logo.png" alt="Library Logo" class="logo">
+        <h1 class="title">OnShelfGTDL</h1>
+        <div class="datetime">
+            <span id="current-date">February 08, 2025</span>
+            <span id="current-time">12:30 PM</span>
+        </div>
+    </header>
+
+    <div class="content">
+        <div class="left-panel">
+            <button class="btn login">Login</button>
+            <button class="btn logout">Log out</button>
+        </div>
+
+        <div class="scan-area">
+            <img src="/images/library-card.png" alt="Library Card" class="card-image">
+            <p>SCAN Library Card</p>
+            <input type="text" id="barcode-input" placeholder="Scan Here" autofocus>
+        </div>
+    </div>
+
+    <footer class="footer">
+        LIBRARY - GEN. T. DE LEON NATIONAL HIGH SCHOOL
+    </footer>
+</div>
+
+
+<script>
+    function updateTime() {
+        const now = new Date();
+        document.getElementById("current-time").innerText = now.toLocaleTimeString();
+    }
+    setInterval(updateTime, 1000);
+</script>

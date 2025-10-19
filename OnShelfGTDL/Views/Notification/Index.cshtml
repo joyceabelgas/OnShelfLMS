@@ -1,0 +1,38 @@
+﻿@model List<OnShelfGTDL.Models.NotificationsModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Notification";
+}
+
+<div>
+
+    <div class="container-pad">
+    </div>
+
+    <div class="container-page mt-4">
+
+      @*  <ul class="list-unstyled">
+        @foreach (var item in Model)
+        {
+            var url = $"/{item.Method}/{item.Action}";
+            var displayDate = item.Date?.ToString("MM/dd/yy hh:mmtt");
+            <li class="notification-item p-3 mb-2">
+                <a href="@url" class="text-decoration-none text-dark d-flex justify-content-between align-items-start">
+                    <div class="pe-3">
+                        <div class="fw-bold">@item.Action</div>
+                        <div class="small text-muted">– @item.Message</div>
+                    </div>
+                    <div class="text-nowrap text-end small fw-bold text-secondary">@displayDate</div>
+                </a>
+            </li>
+        }
+    </ul> *@
+
+        <ul id="notificationList" class="list-unstyled"></ul>
+
+    </div>
+
+</div>
+
+<script src="~/js/jquery-3.3.6.0.min.js"></script>
+<script src="~/js/notification.js"></script>

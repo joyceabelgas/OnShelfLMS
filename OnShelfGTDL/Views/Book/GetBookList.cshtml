@@ -1,0 +1,140 @@
+﻿@model List<OnShelfGTDL.Models.BookListModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Book Gallery";
+    var categoryTitle = ViewBag.Category ?? "Books";
+}
+
+<div>
+
+    <div class="container-pad"></div>
+    <div class="container-page mt-4">
+        
+        <div class="mx-3 mb-3 d-flex justify-content-between align-items-center fs-7">
+            <span class="booktitle fw-bold fs-5 ">@categoryTitle</span>
+            <input type="text" id="searchBar" class="form-control d-inline-block searchBar" placeholder="Search">
+        </div>
+
+        <!-- Scrollable content section -->
+        <div class="book-gallery-scroll">
+            <div class="row row-cols-1 row-cols-md-5 g-4">
+                @foreach (var book in Model)
+                {
+                    <div class="col-md-3 mb-3">
+                        <div class="card shadow-sm mx-auto p-2 text-center book-card fs-7"
+                             data-bs-toggle="modal"
+                             data-bs-target="#bookModal"
+                             data-isbn="@book.ISBN"
+                             data-title="@book.BookName"
+                             data-author="@book.AuthorsName"
+                             data-copyright="@book.Copyright"
+                             data-category="@book.Category"
+                             data-bookshelf="@book.Bookshelf"
+                             data-description="@book.Description"
+                             data-stocks="@book.Stocks"
+                             data-image="data:image/jpeg;base64,@(book.BookImage != null ? Convert.ToBase64String(book.BookImage) : "")">
+
+                            <img src="data:image/jpeg;base64,@(book.BookImage != null ? Convert.ToBase64String(book.BookImage) : "")"
+                                 class="card-img book-img" alt="Book Image" />
+
+                            <div class="card-body fs-7">
+                                <h6 class="card-title">@book.BookName</h6>
+                                <p style="display:none;" class="card-subtitle">ISBN: @book.ISBN</p>
+                                <p class="card-text">By @book.AuthorsName</p>
+                                <p style="display:none;"  class="card-text"><small class="text-muted">@book.Copyright</small></p>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Book Detail Modal -->
+<div class="modal fade" id="bookModal" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content fs-7" style="background-color: #FFE4E1;">
+           @*  <div class="modal-header">
+                <h6 class="modal-title fw-bold" id="bookModalLabel">Book Details</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div> *@
+
+            <!-- Modal Body -->
+            <div class="modal-body g-3 d-flex">
+                <div class="book-image col-md-4">
+                    <img id="modalBookImage" class="modalBookImage me-3" />
+                </div>
+
+                <div class="col-md-8">
+                    <div class="w-100">
+                        <div class="row g-3">
+                            <div class="col">
+
+                                <h5 id="modalBookTitle" class="fw-bold"></h5>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <!-- Left Column -->
+                            <div class="col">
+                                <p><strong>Author: </strong><span id="modalBookAuthor"></span></p>
+                                <p><strong>ISBN: </strong><span id="modalBookISBN"></span></p>
+                                <p><strong>Publication Year: </strong><span id="modalBookCopyright"></span></p>
+                            </div>
+
+                            <!-- Right Column -->
+                            <div class="col">
+                                <p><strong>Category: </strong><span id="modalCategory"></span></p>
+                                <p><strong>Bookshelf: </strong><span id="modalBookShelf"></span></p>
+                                <p><strong>Stocks: </strong><span id="modalStocks"></span></p>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <!-- About Section -->
+                        <div class="row g-3 mb-3">
+                            <div class="col">
+                                <h6>ABOUT THIS BOOK</h6>
+                                <p id="modalBookDescription" class="modalBookDescription">Loading...</p>
+                            </div>
+                        </div>
+
+                        <!-- Borrow/Return Date -->
+                        <div class="row g-3">
+                            <div class="col-md-6 mt-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <label class="me-2">Borrow Date</label>
+                                    <input type="date" id="borrowDate" class="form-control mb-2" required />
+                                </div>
+
+                                <div class="d-flex align-items-center mb-2">
+                                    <label class="me-2">Return Date</label>
+                                    <input type="date" id="returnDate" class="form-control mb-2" disabled />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="row justify-content-center">
+                            <div class="col-auto d-flex justify-content-center gap-2">
+                                <button class="btn btn-primary w-50" id="btnBorrow">Borrow</button>
+                                <button class="btn btn-primary w-50" id="btnReserve">Reserve</button>
+                                <button class="btn btn-primary" id="btnAddToShelf">
+                                    <img src="~/images/myshelf.png" class="myshelf" alt="myshelf" style="width: 16px; height: 16px;" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.Partial("_CustomAlert") 
+
+<script src="~/js/jquery-3.3.6.0.min.js"></script>
+<script src="~/js/BookList.js"></script>
+@* <script src="~/js/loading.js"></script> *@

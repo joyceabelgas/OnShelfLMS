@@ -1,0 +1,48 @@
+﻿@using OnShelfGTDL.Models
+@inject DatabaseHelper _databaseHelper
+
+@{
+    var userId = Context.Session.GetString("UserID") ?? "";
+    var userRoles = Context.Session.GetString("Role") ?? "";
+    var menuModel = _databaseHelper.GetMenuItems(userId, userRoles).FirstOrDefault() ?? new MenuViewModel();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>On Shelf GTDL</title>
+
+    <!-- Bootstrap & Icons -->
+    <link rel="stylesheet" href="~/css/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="~/css/layout.css">
+    <link rel="stylesheet" href="~/css/main.css">
+    <link rel="stylesheet" href="~/css/manageuser.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div>
+        @if (menuModel.MenuItems != null)
+        {
+            @await Html.PartialAsync("_Menu", menuModel ?? new MenuViewModel())
+        }
+    </div>
+
+    <!-- Main Content -->
+    <div class="w-100" id="content">
+        
+        @RenderBody()
+    </div>
+
+    <!-- JavaScript -->
+    <script src="~/js/jquery-3.3.6.0.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/Main.js"></script>
+    <script src="~/js/Menu.js"></script>
+
+
+</body>
+</html>

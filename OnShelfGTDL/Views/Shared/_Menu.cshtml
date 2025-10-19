@@ -1,0 +1,144 @@
+﻿@model OnShelfGTDL.Models.MenuViewModel
+
+<!-- Navbar Section -->
+<div>
+    <nav class="navbar navbar-light bg-light fixed-top">
+        <div class="container-fluid">
+            <!-- Logo and Title -->
+            <a class="navbar-brand d-flex align-items-center">
+                <img src="~/images/OnShelfGTDLLogo.png" alt="LibraryLogo" class="sidebar-logo me-2">
+                <span class="ctitle fw-bold">ONSHELFGTDL</span>
+            </a>
+            <div class="hamburger-menu" onclick="toggleSidebar(event, this)">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <!-- Module Name -->
+            <span class="moduleName fw-bold text-uppercase">@ViewData["ModuleName"]?.ToString()?.ToUpper()</span>
+
+            <!-- User Profile Section (Right Side) -->
+            <div class=" d-flex align-items-center position-relative ms-auto">
+                <!-- Notification Bell -->
+                <a href="/Notification/Index" class="notification-bell rounded-circle">
+                    <img src="~/images/notification.png" width="30" height="30" />
+                    <span id="notificationDot" class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle d-none"></span>
+                </a>
+                <div class="user-info text-end me-2">
+                    <span class="fw-bold">@Model.FullName</span>
+                    <small class="text-muted d-block">@Model.Role</small>
+                </div>
+
+                <!-- Profile Icon -->
+                @* <img src="~/images/default-user.png" alt="User Profile" class="rounded-circle profile-icon" width="40" height="40" onclick="toggleProfileDropdown()"> *@
+                <!-- Profile Icon -->
+                <img src="@(Model.ProfilePicture != null && Model.ProfilePicture.Length > 0
+           ? "data:image/png;base64," + Convert.ToBase64String(Model.ProfilePicture)
+           : Url.Content("~/images/default-user.png"))"
+                     alt="User Profile" class="rounded-circle profile-icon" width="40" height="40" onclick="toggleProfileDropdown()">
+
+                
+                <!-- Profile Dropdown -->
+                <div id="profileDropdown" class="profile-dropdown shadow">
+                    <div class="row user-details" id="user-details">
+                        <div class="col-md-12">
+                            <h5 class="fw-bold fs-7">@Model.FullName</h5>
+                            <h5 class="text-muted d-block fs-7">@Model.Role</h5>
+                        </div>
+
+                        <hr class="my-2">
+                    </div>
+
+                    <ul class="profile nav flex-column m-0">
+
+                        <li class="profile-item">
+                            <a href="/Account/Profile" class="profile-link d-flex align-items-center">
+                                <img src="@(Model.ProfilePicture != null && Model.ProfilePicture.Length > 0
+                ? "data:image/png;base64," + Convert.ToBase64String(Model.ProfilePicture)
+                : Url.Content("~/images/default-user.png"))"
+                                     alt="User Profile" class="rounded-circle me-2 view-profile">
+                                <span>View Profile</span>
+                            </a>
+                        </li>
+
+                        <li class="profile-logout">
+                            <a href="/Account/Logout" class="profile-link d-flex align-items-center">
+                                @Html.AntiForgeryToken()
+                                <img src="~/images/logout.png" alt="Logout" class="logout me-2" />
+                                <span>Log out</span>
+                            </a>
+                        </li>
+
+                    </ul>
+
+
+
+                   @*  <button class="btn btn-primary w-100 mt-2" onclick="window.location.href='/Account/Profile'">
+                        <img src="@(Model.ProfilePicture != null && Model.ProfilePicture.Length > 0
+                           ? "data:image/png;base64," + Convert.ToBase64String(Model.ProfilePicture)
+                           : Url.Content("~/images/default-user.png"))"
+                                             alt="User Profile" class="rounded-circle" style="width: 24px; height: 24px;" onclick="toggleProfileDropdown()">
+                        View Profile
+                    </button>
+
+                    <form action="/Account/Logout" method="get">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-primary w-100 mt-2">
+                        <img src="~/images/logout.png" alt="Logout" style="width: 16px; height: 16px;" />
+                            Log out
+                        </button>
+                    </form> *@
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<!-- Sidebar Menu Section -->
+<div>
+    <nav id="sidebar" class="sidebar open fixed-left">
+        <ul id="menus" class="nav flex-column">
+            @foreach (var item in Model.MenuItems)
+            {
+                <li class="nav-item">
+                    <a href="@Url.Content(item.Url)" class="menu-link" onclick="toggleDropdown(event, this)">
+                        <img src="@Url.Content(item.Icon)" class="menu-icon" alt="@item.Name" />
+                        <span class="menu-text">@item.Name</span>
+                    </a>
+
+                    @if (item.Submenu != null && item.Submenu.Any())
+                    {
+                        <ul class="submenu">
+                            @foreach (var submenu in item.Submenu)
+                            {
+                                <li>
+                                    <a href="javascript:void(0);" class="submenu-link" data-parent="@item.Name" onclick="loadCategory('@submenu.Name')">
+                                        <span class="sub-menu-right"> › </span> @submenu.Name
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
+
+<div id="loadingOverlay">
+    <img src="@Url.Content("~/images/OnShelfGTDLLogo.png")" class="heartbeat-animation" alt="Loading..." />
+</div>
+
+@* <!-- Script Section -->
+<script>
+    function toggleProfileDropdown() {
+        const dropdown = document.getElementById("profileDropdown");
+        dropdown.classList.toggle("show");
+    }
+</script>
+ *@
+
+@Html.Partial("_CustomAlert")
+
+<script src="~/js/jquery-3.3.6.0.min.js"></script>
+<script src="~/js/Menu.js"></script>

@@ -1,0 +1,223 @@
+﻿@model OnShelfGTDL.Models.BorrowReturnFineViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Borrow Books";
+}
+<div>
+    <div class="container-pad">
+    </div>
+    <div class="container-page mt-3">
+        <!-- Search and Filter Section -->
+        <div class="card-search p-3 mb-3 flex-fill">
+            <div class="row fs-7">
+                <div class="col-md-2">
+                    <div class="d-flex justify-content-start mb-3">
+                        <select class="form-select me-2" id="cmbFilter">
+                            <option>Filter</option>
+                            <option>Approved</option>
+                            <option>Pending</option>
+                            <option>Denied</option>
+                            <option>Borrow Date</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="datefilter col-md-4">
+                    <div class="d-flex justify-content-start mb-3">
+                        <div class="col-md-5">
+                            <input type="date" class="form-control" id="dateFrom">
+                        </div>
+                        <div class="col-md-5">
+                            <input type="date" class="form-control" id="dateTo">
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-sm btn-primary" id="filterBtn">Filter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row fs-7">
+                <div class="col-md-4">
+                    <div class="d-flex justify-content-start">
+                        <input type="text" class="form-control me-2" placeholder="Search" id="searchBar">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-table p-3 mb-3 flex-fill">
+            <div class="row">
+                <!-- Data Table -->
+                <div class="table-responsive fs-7" style="max-height: 500px; overflow-y: auto;">
+                    <table class="table table-hover table-bordered text-center align-middle" id="userTable">
+                        <thead class="table-light fs-7">
+                            <tr>
+                                <th style="display:none;">ID</th>
+                                <th style="display:none;">UserID</th>
+                                <th>Name</th>
+                                <th>ISBN</th>
+                                <th>Borrow Date</th>
+                                <th>Estimated Return Date</th>
+                                <th>Actual Return Date</th>
+                                <th>Status</th>
+                                <th>Approved By</th>
+                                <th>Approved Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Book Detail Modal -->
+<div class="modal fade" id="bookModal" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content fs-7" style="background-color: #FFE4E1;">
+           @*  <div class="modal-header">
+                <h6 class="modal-title fw-bold" id="bookModalLabel">Book Details</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div> *@
+
+            <!-- Modal Body -->
+            <div class="modal-body g-3 d-flex">
+                <div class="col-md-4">
+                    <img id="modalBookImage" class="modalBookImage me-3" />
+                </div>
+
+                <div class="col-md-8">
+                    <div class="w-100">
+                        <div class="row g-3">
+                            <div class="col">
+
+                                <h5 id="modalBookTitle" class="fw-bold p-1"></h5>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <!-- Left Column -->
+                            <div class="col">
+                                <p class="p-1"><strong>Author: </strong><span id="modalBookAuthor"></span></p>
+                                <p class="p-1"><strong>ISBN: </strong><span id="modalBookISBN"></span></p>
+                                <p class="p-1"><strong>Publication Year: </strong><span id="modalBookCopyright"></span></p>
+                            </div>
+
+                            <!-- Right Column -->
+                            <div class="col">
+                                <p class="p-1"><strong>Category: </strong><span id="modalCategory"></span></p>
+                                <p class="p-1"><strong>Bookshelf: </strong><span id="modalBookShelf"></span></p>
+                                <p class="p-1"><strong>Stocks: </strong><span id="modalStocks"></span></p>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <!-- About Section -->
+                        <div class="row g-3 mb-3">
+                            <div class="col">
+                                <h6>ABOUT THIS BOOK</h6>
+                                <p id="modalBookDescription" class="modalBookDescription">Loading...</p>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="row justify-content-center">
+                            <div class="col-auto d-flex justify-content-center gap-2">
+                                <button class="btn btn-primary w-50" id="btnApprove">Approve Request</button>
+                                <button class="btn btn-primary w-50" id="btnDeny">Deny Request</button>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="returnModal" tabindex="-1" aria-labelledby="returnModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content fs-7" style="background-color: #FFE4E1;">
+           @*  <div class="modal-header">
+                <h5 class="modal-title" id="returnModalLabel">Return Book Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div> *@
+            <div class="modal-body">
+                <input type="hidden" id="modalBookId" />
+                <input type="hidden" id="modalUserId" />
+                <input type="hidden" id="ISBN" />
+
+                <div class="row g-2 p-1">
+                    <div class="col-md-4 p-1">
+                        <label><strong>Name:</strong></label>
+                        <p id="modalName"></p>
+                    </div>
+                    <div class="col-md-4 p-1">
+                        <label><strong>ISBN:</strong></label>
+                        <p id="modalISBN"></p>
+                    </div>
+                </div>
+
+                <div class="row g-2 p-1">
+                    <div class="col-md-4 p-1">
+                        <label><strong>Borrow Date:</strong></label>
+                        <p id="modalBorrowDate"></p>
+                    </div>
+                    <div class="col-md-4 p-1">
+                        <label><strong>Estimated Return Date:</strong></label>
+                        <p id="modalReturnDate"></p>
+                    </div>
+                    <div class="col-md-4 p-1">
+                        <label><strong>Overdue (days):</strong></label>
+                        <p id="modalOverdue"></p>
+                    </div>
+                </div>
+
+                <!-- Hidden fine section -->
+                <div id="fineSection" class="d-none">
+                    <hr />
+                    <div class="mb-3">
+                        <label for="cmbFine" class="form-label">Select Fine:</label>
+                        <select id="cmbFine" class="form-select">
+                            <option value="">-- Select Fine --</option>
+                            @foreach (var fine in Model.FineList)
+                            {
+                                <option value="@fine.ID" data-amount="@fine.Amount">@fine.FineType</option>
+                            }
+                        </select>
+                    </div>
+
+                    <button type="button" id="btnAddFine" class="btn btn-primary mb-3">Add Fine</button>
+
+                    <table id="tblFines" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Fine Name</th>
+                                <th>Amount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+
+                    <!-- Hidden field to store selected fines -->
+                    <input type="hidden" id="SelectedFines" name="SelectedFines" />
+                </div>
+
+
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button class="btn btn-primary" id="btnReturnWithFines">Return with Fines</button>
+                <button class="btn btn-primary" id="btnReturn">Return</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@Html.Partial("_CustomAlert")
+
+<script src="~/js/jquery-3.3.6.0.min.js"></script>
+<script src="~/js/BorrowBooks.js"></script>
+@* <script src="~/js/loading.js"></script> *@

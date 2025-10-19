@@ -1,0 +1,35 @@
+﻿@model OnShelfGTDL.Models.MenuViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <div class="container-pad">
+    </div>
+    <div class="container-page mt-4">
+        <div class="greeting">
+            <h2>Hello, <span class="dashboard-user">@ViewData["Name"]?.ToString()!</span></h2>
+            <p>@DateTime.Now.ToString("MMMM dd, yyyy | dddd hh:mm tt")</p> <!-- dynamic current date and time -->
+        </div>
+        <hr />
+        <div class="card-home">
+            <h5 class="text-start">Most Borrowed Books</h5>
+            <div class="book-gallery-scroll" >
+                <div class="row row-cols-1 row-cols-md-5 g-4" id="mostBorrowedBooks">
+                </div>
+            </div>
+        </div>
+        <div class="card-home mt-4 mb-4">
+            <h5 class="text-start">Today's Pick for You</h5>
+            <div class="book-gallery-scroll">
+                <div class="row row-cols-1 row-cols-md-5 g-4" id="todaysPickBooks">
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+<script src="~/js/jquery-3.3.6.0.min.js"></script>
+<script src="~/js/home.js"></script>

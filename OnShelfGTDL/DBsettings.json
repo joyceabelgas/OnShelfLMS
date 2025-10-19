@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+      "LMS": "Server=(LocalDB)\\OnShelfDB;Database=LMS;Trusted_Connection=True;TrustServerCertificate=True"
+  }
+}

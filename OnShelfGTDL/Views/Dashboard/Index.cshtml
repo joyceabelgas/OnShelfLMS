@@ -1,0 +1,129 @@
+﻿@model OnShelfGTDL.Models.DashboardViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Dashboard"; // not Profile anymore
+}
+
+<div>
+    <div class="container-pad"></div>
+    <div class="container-page mt-4">
+        <div class="greeting">
+            <h2>Hello, <span class="dashboard-user">@ViewData["Name"]?.ToString()!</span></h2>
+            <p>@DateTime.Now.ToString("MMMM dd, yyyy | dddd hh:mm tt")</p> <!-- dynamic current date and time -->
+        </div>
+
+        <div class="row mt-4">
+            <div class="stats-cards d-flex flex-wrap gap-3">
+                <div class="card-dashboard p-3 flex-fill">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3>@Model.Summary.TotalMembers</h3>
+                            <p>Total Members</p>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <img src="~/images/members.png" alt="Total Members" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-dashboard p-3 flex-fill">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3>@Model.Summary.TotalBorrowed</h3>
+                            <p>Borrowed</p>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <img src="~/images/borrowed.png" alt="Borrowed" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-dashboard p-3 flex-fill">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3>@Model.Summary.TotalReserved</h3>
+                            <p>Reserved</p>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <img src="~/images/reserved.png" alt="Reserved" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-dashboard p-3 flex-fill">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3>@Model.Summary.TotalOverdue</h3>
+                            <p>Overdue</p>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <img src="~/images/overdue.png" alt="Overdue" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row tables-section">
+            <div class="col-12 col-md-6 mb-4">
+                <div class="table-card">
+                    <h4>Users List</h4>
+                    <div class="table-responsive-dashboard fs-7" style="max-height: 500px; overflow-y: auto;">
+                        <table class="table table-hover table-bordered text-center align-middle" id="userTable">
+                            <thead class="table-light fs-7">
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>Fullname</th>
+                                    <th>Books Issued</th>
+                                </tr>
+                            </thead>
+                            <tbody class="fs-7">
+                                @foreach (var user in Model.Users)
+                                {
+                                    <tr>
+                                        <td>@user.UserID</td>
+                                        <td>@user.FullName</td>
+                                        <td>@user.BooksIssued</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <a href="/Account/ManageUser" class="see-all-link">See all</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 mb-4">
+                <div class="table-card">
+                    <h4>Books List</h4>
+                    <div class="table-responsive-dashboard fs-7" style="max-height: 500px; overflow-y: auto;">
+                        <table class="table table-hover table-bordered text-center align-middle" id="bookTable">
+                            <thead class="table-light fs-7">
+                                <tr>
+                                    <th>ISBN</th>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody class="fs-7">
+                                @foreach (var book in Model.Books)
+                                {
+                                    <tr>
+                                        <td>@book.ISBN</td>
+                                        <td>@book.Title</td>
+                                        <td>@book.Author</td>
+                                        <td>@book.Quantity</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <a href="/Book/ManageBooks" class="see-all-link">See all</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
