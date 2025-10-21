@@ -8,7 +8,6 @@
     </div>
     <div class="container-page mt-3">
         <!-- Summary Cards -->
-
         <!-- Filters -->
         <div class="card-dashboard p-3 mb-3 flex-fill">
             <div class="row">
@@ -30,7 +29,6 @@
                     <select class="form-select" name="Status" id="ddlStatus">
                         <option value="Borrowed">Borrowed</option>
                         <option value="Overdue">Overdue</option>
-                        <option value="Returned">Returned</option>
                         <option value="Reserved">Reserved</option>
                     </select>
                 </div>
@@ -76,7 +74,7 @@
 
         <!-- Download Button -->
         <div class="text-end mt-3">
-            <a asp-action="DownloadReport" class="btn btn-pink">Download Report</a>
+            <button id="btnDownload" class="btn btn-pink">Download Report</button>
         </div>
     </div>
 </div>
@@ -88,3 +86,5 @@
 
 <script src="~/js/jquery-3.3.6.0.min.js"></script>
 <script src="~/js/reports.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>

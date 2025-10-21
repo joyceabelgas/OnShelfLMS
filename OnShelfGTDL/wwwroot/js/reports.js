@@ -93,3 +93,65 @@ function toPascalCaseObject(obj) {
     }
     return newObj;
 }
+
+$('#btnDownload').on('click', function () {
+    // Fetch table header and body data from DOM
+    const headers = [];
+    $('#reportTable thead th').each(function () {
+        headers.push($(this).text().trim());
+    });
+
+    const rows = [];
+    $('#reportTable tbody tr').each(function () {
+        const row = [];
+        $(this).find('td').each(function () {
+            row.push($(this).text().trim());
+        });
+        rows.push(row);
+    });
+
+    if (rows.length === 0) {
+        alert("No data available to export.");
+        return;
+    }
+
+    // Initialize jsPDF
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({
+        orientation: 'landscape', // landscape for wide tables
+        unit: 'pt',
+        format: 'A4'
+    });
+
+    // Title and metadata
+    const status = $('#ddlStatus').val();
+    const dateFilter = $('#dateFilterSelector').val();
+    const category = $('#categorySelector').val();
+
+    doc.setFontSize(16);
+    doc.text("Library Reports", 40, 40);
+    doc.setFontSize(11);
+    doc.text(`Status: ${status}   |   Date Range: ${dateFilter}   |   Category: ${category}`, 40, 60);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 40, 75);
+
+    // Add table
+    doc.autoTable({
+        head: [headers],
+        body: rows,
+        startY: 100,
+        styles: {
+            fontSize: 9,
+            halign: 'center',
+            valign: 'middle'
+        },
+        headStyles: {
+            fillColor: [243, 121, 157] // pink shade
+        },
+        alternateRowStyles: {
+            fillColor: [245, 245, 245]
+        }
+    });
+
+    // Download file
+    doc.save(`Report_${status}_${new Date().toISOString().slice(0, 10)}.pdf`);
+});
