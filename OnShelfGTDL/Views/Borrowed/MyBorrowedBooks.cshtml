@@ -44,11 +44,16 @@
 
                                     </div>
                                 </div>
-                                @* <div class="row">
+                                <div class="row">
                                     <div class="col-md-8 d-flex align-items-center justify-content-center">
-                                        <button class="btn btn-primary">Return</button>
+                                        <button class="btn btn-primary btn-cancel"
+                                                data-id="@book.Id"
+                                                data-isbn="@book.ISNB"
+                                                @(book.Status == "Pending" ? "" : "style='display:none;'")>
+                                            Cancel
+                                        </button>
                                     </div>
-                                </div> *@
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -58,20 +63,6 @@
 
     </div>
 </div>
-<script>
-    $(document).ready(function () {
-        $('#searchBar').on('keyup', function () {
-            var searchTerm = $(this).val().toLowerCase();
 
-            $('.borrowed-card').each(function () {
-                var cardText = $(this).text().toLowerCase();
-
-                if (cardText.includes(searchTerm)) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
-        });
-    });
-</script>
+<script src="~/js/jquery-3.3.6.0.min.js"></script>
+<script src="~/js/MyBorrowedBooks.js"></script>

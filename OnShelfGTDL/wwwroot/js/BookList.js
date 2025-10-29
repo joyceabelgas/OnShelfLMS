@@ -1,5 +1,36 @@
 ﻿
 $(document).ready(function () {
+    const today = new Date().toISOString().split('T')[0];
+    $('#borrowDate').attr('min', today);
+
+    $('#borrowDate').on('input', function () {
+        const selectedDate = new Date($(this).val());
+        const day = selectedDate.getUTCDay(); 
+
+        if (day === 0 || day === 6) {
+            $(this).val('');
+            $('#returnDate').val('');
+            return;
+        }
+
+        let returnDate = new Date(selectedDate);
+        returnDate.setDate(returnDate.getDate() + 3);
+
+        let returnDay = returnDate.getUTCDay();
+        if (returnDay === 6) {
+            returnDate.setDate(returnDate.getDate() + 2);
+        } else if (returnDay === 0) {
+            returnDate.setDate(returnDate.getDate() + 1);
+        }
+
+        const formattedReturnDate = returnDate.toISOString().split('T')[0];
+        $('#returnDate').val(formattedReturnDate);
+    });
+
+    $('#borrowDate').on('keydown', function (e) {
+        e.preventDefault();
+    });
+
     $(".book-card").on("click", function () {
         const bookImage = $(this).data("image");
         const bookTitle = $(this).data("title");
@@ -33,23 +64,26 @@ $(document).ready(function () {
     });
 });
 
-
-document.getElementById('borrowDate').addEventListener('change', function () {
-    const borrowDate = new Date(this.value);
-
-    if (!isNaN(borrowDate.getTime())) {
-        // Add 3 days to the borrow date
-        borrowDate.setDate(borrowDate.getDate() + 3);
-
-        // Format the date back to yyyy-mm-dd
-        const returnDate = borrowDate.toISOString().split('T')[0];
-
-        // Set the return date value
-        document.getElementById('returnDate').value = returnDate;
-    } else {
-        document.getElementById('returnDate').value = '';
-    }
+$('#borrowDate').on('keydown', function (e) {
+    e.preventDefault();
 });
+
+//document.getElementById('borrowDate').addEventListener('change', function () {
+//    const borrowDate = new Date(this.value);
+
+//    if (!isNaN(borrowDate.getTime())) {
+//        // Add 3 days to the borrow date
+//        borrowDate.setDate(borrowDate.getDate() + 3);
+
+//        // Format the date back to yyyy-mm-dd
+//        const returnDate = borrowDate.toISOString().split('T')[0];
+
+//        // Set the return date value
+//        document.getElementById('returnDate').value = returnDate;
+//    } else {
+//        document.getElementById('returnDate').value = '';
+//    }
+//});
 
 $(document).ready(function () {
     const today = new Date().toISOString().split('T')[0];

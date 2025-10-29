@@ -965,6 +965,7 @@ namespace OnShelfGTDL.Models
                             {
                                 books.Add(new BorrowedBooksModel
                                 {
+                                    Id = Convert.ToInt16(row["Id"]),
                                     ISNB = row["ISBN"].ToString(),
                                     BookName = row["BookName"].ToString(),
                                     Category = row["Category"].ToString(),
@@ -2244,6 +2245,23 @@ namespace OnShelfGTDL.Models
                 }
             }
         }
+        public bool CancelBorrowedBook(int borrowId, string isbn)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("BorrowedBooksCancel", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@BorrowId", borrowId);
+                    cmd.Parameters.AddWithValue("@ISBN", isbn);
+
+                    int rows = cmd.ExecuteNonQuery();
+                    return rows > 0;
+                }
+            }
+        }
+
 
     }
 }

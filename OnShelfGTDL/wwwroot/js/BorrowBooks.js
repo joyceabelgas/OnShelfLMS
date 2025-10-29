@@ -105,7 +105,7 @@ function loadBorrowBookData() {
 
             data.forEach(record => {
                 const row = `
-                    <tr data-id="${record.id}">
+                    <tr data-id="${record.id}" data-isbn="${record.isbn}" data-status="${record.status}" data-userID="${record.userID}" data-id="${record.id}">
                         <td style="display:none;">${record.id}</td>
                         <td style="display:none;">${record.userID}</td>
                         <td>${record.name}</td>
@@ -121,6 +121,7 @@ function loadBorrowBookData() {
             });
 
             filterByDateRange();
+            bindRowClickEvent();
         })
         .catch(error => console.error('Error loading data:', error));
 }

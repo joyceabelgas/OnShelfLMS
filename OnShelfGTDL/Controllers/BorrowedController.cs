@@ -94,5 +94,13 @@ namespace OnShelfGTDL.Controllers
             return Json(amount);
         }
 
+        [HttpPost]
+        public IActionResult CancelBorrowedBook(int borrowId, string isbn)
+        {
+            var result = _dbHelper.CancelBorrowedBook(borrowId, isbn);
+            return Json(new { success = result, message = result ? "Borrow canceled successfully." : "Failed to cancel borrow." });
+        }
+
+
     }
 }

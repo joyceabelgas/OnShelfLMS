@@ -516,7 +516,7 @@ namespace OnShelfGTDL.Controllers
             {
                 return RedirectToAction("Login", "Account");
             }
-            ViewData["ModuleName"] = "Manage Books";
+            ViewData["ModuleName"] = "Manage E-Books";
             List<EBookModelView> books = _dbHelper.GetAllEBooks();
             return View(books);
         }
