@@ -35,31 +35,27 @@ const publicationName = document.getElementById('publicationName');
 const description = document.getElementById('description');
 const stats = document.getElementById('status');
 
-const searchInput = document.getElementById('searchBar');
 const tableRows = document.querySelectorAll('tbody tr');
 
-if (searchInput) { // Check if element exists
+function bindSearchBookFilter() {
+    const searchInput = document.getElementById('searchBar');
+    if (!searchInput) return;
+
     searchInput.addEventListener('input', () => {
         const searchValue = searchInput.value.toLowerCase();
+        const tableRows = document.querySelectorAll('#bookTableBody tr');
 
         tableRows.forEach(row => {
             const rowText = row.textContent.toLowerCase();
             row.style.display = rowText.includes(searchValue) ? '' : 'none';
         });
     });
-} else {
-    //console.error('Search input not found!');
 }
 
 //-----------NEW/SAVE--------------- 
 newButton.addEventListener('click', async function () {
     ClearData();
     new bootstrap.Modal(document.getElementById('userModal')).show();
-});
-
-document.getElementById('btnUploadEbook').addEventListener('click', function () {
-    const modal = new bootstrap.Modal(document.getElementById('ebookModal'));
-    modal.show();
 });
 
 document.getElementById('ebookCoverImage').addEventListener('change', function (e) {
@@ -293,6 +289,7 @@ function loadBooks() {
                     </tr>`;
                 tableBody.append(row);
             });
+            bindSearchBookFilter();
         },
         error: function (err) {
             console.error("Failed to load books", err);
@@ -430,72 +427,4 @@ document.getElementById('confirmYesBtn').addEventListener('click', function () {
     const modalEl = document.getElementById('confirmModal');
     bootstrap.Modal.getInstance(modalEl).hide();
     confirmCallback = null;
-});
-
-// Preview cover image
-$('#ebookCoverImage').on('change', function () {
-    const file = this.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            $('#ebookCoverPreview').attr('src', e.target.result).show();
-        };
-        reader.readAsDataURL(file);
-    }
-});
-
-$('#ebookFile').on('change', function () {
-    const file = this.files[0];
-    if (file && file.size > 200 * 1024 * 1024) {
-        alert('The selected PDF exceeds the 200 MB limit.');
-        $(this).val('');
-    }
-});
-
-$('#btnSaveEbook').on('click', function () {
-    const pdfFile = $('#ebookFile')[0].files[0];
-    const coverFile = $('#ebookCoverImage')[0].files[0];
-
-    const maxSize = 200 * 1024 * 1024;
-    if (pdfFile && pdfFile.size > maxSize) {
-        alert('The selected PDF file exceeds the 200 MB size limit.');
-        return;
-    }
-    if (coverFile && coverFile.size > maxSize) {
-        alert('The cover image exceeds the 200 MB size limit.');
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append("title", $('#ebookTitle').val());
-    formData.append("category", $('#ebookCategory').val());
-    formData.append("authors", $('#ebookAuthors').val());
-    formData.append("description", $('#ebookDescription').val());
-    if (pdfFile) formData.append("ebookFile", pdfFile);
-    if (coverFile) formData.append("ebookCoverImage", coverFile);
-
-    $.ajax({
-        url: '/Book/UploadEbook',
-        type: 'POST',
-        data: formData,
-        contentType: false,
-        processData: false,
-        beforeSend: function () {
-            $('#btnSaveEbook').prop('disabled', true).text('Saving...');
-        },
-        success: function (response) {
-            alert('E-Book uploaded successfully!');
-            $('#ebookModal').modal('hide');
-            //$('#frmEbookUpload')[0].reset();
-            $('#ebookCoverPreview').attr('src', '').hide();
-        },
-        error: function (xhr) {
-            console.error(xhr);
-            //alert('❌ Error uploading e-book:\n' + xhr.responseText);
-            alert('Error saving pdf');
-        },
-        complete: function () {
-            $('#btnSaveEbook').prop('disabled', false).text('Save');
-        }
-    });
 });

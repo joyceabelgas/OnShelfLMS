@@ -1,0 +1,143 @@
+﻿@model List<OnShelfGTDL.Models.EBookModelView>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Manage E-Books";
+}
+
+<div>
+    <div class="container-pad">
+    </div>
+    <div class="container-page mt-4">
+        <!-- Table Section -->
+        <div class="container bg-main fs-7">
+
+            <div class="card-search p-3 mb-3 flex-fill">
+                <div class="row">
+                    <div class="d-flex align-items-center fs-7">
+                        <input type="text" id="searchBar" class="form-control fs-7" style="width: 300px;" placeholder="Search">
+                        <div class="btn-group me-2" role="group" aria-label="Main actions">
+                            <button class="btn btn-primary ms-2" id="btnUploadEbook">
+                                <img src="~/images/add-book.png" alt="add-e-book" style="width: 16px; height: 16px;" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Table -->
+            <div class="card-table p-3 mb-3 flex-fill">
+                <div class="row">
+                    <div class="table-responsive fs-7 mt-1" style="max-height: 500px; overflow-y: auto;">
+                        <table class="table table-hover table-bordered text-center align-middle " id="userTable" style="table-layout: fixed;">
+                            <thead class="table-light fs-7">
+                                <tr>
+                                    <th>E-Book No</th>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Authors</th>
+                                    <th>Description</th>
+                                    <th>Uploaded By</th>
+                                    <th>Date Uploaded</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="fs-7" id="bookTableBody">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="ebookModal" tabindex="-1" aria-labelledby="ebookModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content fs-7" style="background-color: #FFE4E1;">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="ebookModalLabel">Add E-Book</h5>
+            </div>
+
+            <div class="modal-body">
+                <form id="ebookForm" enctype="multipart/form-data">
+                    <div class="row g-3">
+                        <input type="hidden" id="ebookId" />
+                        <input type="hidden" id="ebookFilePath" />
+                        <input type="hidden" id="ebookCoverPath" />
+                        <!-- Left Column: E-Book Cover Image -->
+                        <div class="col-md-3 d-flex flex-column align-items-center">
+                            <div id="ebookCoverPreview" class="border mb-2 overflow-hidden"
+                                 style="width: 150px; height: 200px; background-color: #fff;">
+                                <img id="ebookCover" src="/images/default-book.png" alt="E-Book Cover"
+                                     style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <label for="ebookCoverImage" class="form-label">E-Book Cover Image</label>
+                            <input type="file" id="ebookCoverImage" class="form-control mb-2" accept="image/*" />
+                        </div>
+
+                        <!-- Right Column: E-Book Info -->
+                        <div class="col-md-9 fs-7 fw-semibold">
+                            <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <label for="ebookFile" class="form-label">E-Book File <span class="text-danger">*</span></label>
+                                    <input type="file" id="ebookFile" class="form-control" accept="application/pdf" required />
+                                    <small class="text-danger">*accepts only PDF File</small>
+                                    <!-- This will show the current uploaded file name/link -->
+                                    <div id="currentEbookFile" class="mt-1"></div>
+                                </div>
+
+                                <div class="col-md-6 mb-2">
+                                    <label for="ebookTitle" class="form-label">Title</label>
+                                    <input type="text" id="ebookTitle" class="form-control" required />
+                                </div>
+
+                                <div class="col-md-6 mb-2">
+                                    <label for="ebookCategory" class="form-label">Category</label>
+                                    <select id="ebookCategory" class="form-select" required>
+                                        <option value="">Select Category</option>
+                                        <option value="Science">Science</option>
+                                        <option value="Social Science">Social Science</option>
+                                        <option value="English">English</option>
+                                        <option value="Mathematics">Mathematics</option>
+                                        <option value="Fiction">Fiction</option>
+                                        <option value="Mapeh">Mapeh</option>
+                                        <option value="General Education">General Education</option>
+                                        <option value="PRVE">PRVE</option>
+                                        <option value="TLE">TLE</option>
+                                        <option value="Filipino">Filipino</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-12 mb-2">
+                                    <label for="ebookAuthors" class="form-label">Authors</label>
+                                    <input type="text" id="ebookAuthors" class="form-control" />
+                                </div>
+
+                                <div class="col-md-12 mb-2">
+                                    <label for="ebookDescription" class="form-label">Descriptions</label>
+                                    <textarea id="ebookDescription" class="form-control" rows="3" style="resize: none;"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btnSaveEbook">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@Html.Partial("_CustomAlert")
+@Html.Partial("_ConfirmModal")
+
+
+<script src="~/js/jquery-3.3.6.0.min.js"></script>
+<script src="~/js/ManageEBooks.js"></script>

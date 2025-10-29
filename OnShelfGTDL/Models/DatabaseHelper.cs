@@ -246,6 +246,58 @@ namespace OnShelfGTDL.Models
             return books;
         }
 
+        public List<EBookModelView> GetAllEBooks()
+        {
+            List<EBookModelView> books = new List<EBookModelView>();
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(_connectionString))
+                {
+                    conn.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("sp_ManageEBooksLoadRecords", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                        DataSet dataSet = new DataSet();
+                        adapter.Fill(dataSet);
+
+                        if (dataSet.Tables.Count > 0 && dataSet.Tables[0].Rows.Count > 0)
+                        {
+                            foreach (DataRow row in dataSet.Tables[0].Rows)
+                            {
+                                books.Add(new EBookModelView
+                                {
+                                    EbookID = Convert.ToInt32(row["EbookID"]),
+                                    Title = row["Title"].ToString(),
+                                    Category = row["Category"].ToString(),
+                                    Authors = row["Authors"].ToString(),
+                                    Description = row["Description"].ToString(),
+                                    EbookFilePath = row["EbookFilePath"].ToString(),
+                                    CoverImageType = row["CoverImageType"].ToString(),
+                                    CoverImage = row["CoverImage"] as byte[],
+                                    UploadedBy = row["UploadedBy"].ToString(),
+                                    DateUploaded = Convert.ToDateTime(row["DateUploaded"])
+                                });
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("No data returned.");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+
+            return books;
+        }
+
         public bool SaveBook(string isnb, string bookName, string category, string authorsName, string bookShelf, string copyright,
                      int stockQuantity, string publicationName, string description, byte[] bookPicture)
         {
@@ -2037,13 +2089,13 @@ namespace OnShelfGTDL.Models
         //}
 
         public async Task<bool> SaveEBookAsync(
-        string title,
-        string category,
-        string authors,
-        string description,
-        string ebookFilePath,
-        IFormFile coverImage,
-        string uploadedBy)
+    string title,
+    string category,
+    string authors,
+    string description,
+    string ebookFilePath,
+    IFormFile? coverImage,
+    string uploadedBy)
         {
             try
             {
@@ -2062,7 +2114,7 @@ namespace OnShelfGTDL.Models
                         cmd.Parameters.AddWithValue("@EbookFilePath", ebookFilePath);
                         cmd.Parameters.AddWithValue("@UploadedBy", uploadedBy ?? "Admin");
 
-                        // Convert image to binary
+                        // Convert IFormFile coverImage → binary data
                         byte[]? imageBytes = null;
                         string? contentType = null;
                         if (coverImage != null)
@@ -2091,6 +2143,68 @@ namespace OnShelfGTDL.Models
             }
         }
 
+
+
+        public async Task<bool> UpdateEBookAsync(
+    int ebookId,
+    string title,
+    string category,
+    string authors,
+    string description,
+    string ebookFilePath,
+    IFormFile? coverImage,
+    string uploadedBy)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(_connectionString))
+                {
+                    await conn.OpenAsync();
+
+                    using (SqlCommand cmd = new SqlCommand("sp_UpdateEBook", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@Id", ebookId);
+                        cmd.Parameters.AddWithValue("@Title", title);
+                        cmd.Parameters.AddWithValue("@Category", category ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Authors", authors ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Description", description ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@EbookFilePath", ebookFilePath);
+                        cmd.Parameters.AddWithValue("@UploadedBy", uploadedBy ?? "Admin");
+
+                        // Handle new cover image if provided
+                        byte[]? imageBytes = null;
+                        string? contentType = null;
+                        if (coverImage != null)
+                        {
+                            using (var ms = new MemoryStream())
+                            {
+                                await coverImage.CopyToAsync(ms);
+                                imageBytes = ms.ToArray();
+                                contentType = coverImage.ContentType;
+                            }
+                        }
+
+                        //cmd.Parameters.AddWithValue("@CoverImage", (object?)imageBytes ?? DBNull.Value);
+                        //cmd.Parameters.AddWithValue("@CoverImageType", (object?)contentType ?? DBNull.Value);
+                        cmd.Parameters.Add("@CoverImage", SqlDbType.VarBinary).Value = (object?)imageBytes ?? DBNull.Value;
+                        cmd.Parameters.Add("@CoverImageType", SqlDbType.NVarChar, 50).Value = (object?)contentType ?? DBNull.Value;
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating e-book: {ex.Message}");
+                return false;
+            }
+        }
+
+
         public EBook? GetEBookById(int ebookId)
         {
             using (var conn = new SqlConnection(_connectionString))
@@ -2115,7 +2229,21 @@ namespace OnShelfGTDL.Models
             }
             return null;
         }
+        public bool DeleteEBook(int id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                using (var command = new SqlCommand("sp_ManageEBooksdeleteRecords", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Id", id);
 
+                    int rowsAffected = command.ExecuteNonQuery();
+                    return rowsAffected > 0;
+                }
+            }
+        }
 
     }
 }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http.Features;
 using OnShelfGTDL.Interface;
 using OnShelfGTDL.Models;
 using OnShelfGTDL.Services;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,12 @@ builder.WebHost.ConfigureKestrel(options =>
 {
     options.Limits.MaxRequestBodySize = 200 * 1024 * 1024; // 200 MB
 });
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    });
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();

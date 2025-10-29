@@ -155,3 +155,53 @@ $('#btnDownload').on('click', function () {
     // Download file
     doc.save(`Report_${status}_${new Date().toISOString().slice(0, 10)}.pdf`);
 });
+
+$('#btnDownloadCSV').on('click', function () {
+    const headers = [];
+    $('#reportTable thead th').each(function () {
+        headers.push($(this).text().trim());
+    });
+
+    const rows = [];
+    $('#reportTable tbody tr').each(function () {
+        const row = [];
+        $(this).find('td').each(function () {
+            row.push($(this).text().trim());
+        });
+        rows.push(row);
+    });
+
+    if (rows.length === 0) {
+        alert("No data available to export.");
+        return;
+    }
+
+    // CSV header info (filters)
+    const status = $('#ddlStatus').val();
+    const dateFilter = $('#dateFilterSelector').val();
+    const category = $('#categorySelector').val();
+    const generatedDate = new Date().toLocaleString();
+
+    let csvContent = `"Library Reports"\n`;
+    csvContent += `"Status:","${status}","Date Range:","${dateFilter}","Category:","${category}"\n`;
+    csvContent += `"Generated on:","${generatedDate}"\n\n`;
+
+    // Add table headers
+    csvContent += headers.map(h => `"${h}"`).join(',') + '\n';
+
+    // Add table rows
+    rows.forEach(row => {
+        csvContent += row.map(value => `"${value.replace(/"/g, '""')}"`).join(',') + '\n';
+    });
+
+    // Create a Blob and download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = `Report_${status}_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using OnShelfGTDL.Interface;
 using OnShelfGTDL.Models;
 using System.Data;
@@ -400,34 +401,93 @@ namespace OnShelfGTDL.Controllers
         }
 
         [RequestSizeLimit(209_715_200)]
-[RequestFormLimits(MultipartBodyLengthLimit = 209_715_200)]
+        [RequestFormLimits(MultipartBodyLengthLimit = 209_715_200)]
         [HttpPost]
-        public async Task<IActionResult> UploadEbook(IFormFile ebookFile, IFormFile ebookCoverImage, string title, string category, string authors, string description)
+        public async Task<IActionResult> UploadEbook(
+        IFormFile ebookFile,
+        IFormFile? ebookCoverImage,
+        string title,
+        string category,
+        string authors,
+        string description)
         {
-            var ebookPath = Path.Combine(_hostEnvironment.WebRootPath, "uploads/ebooks");
-            var userID = HttpContext.Session.GetString("UserID");
-            if (!Directory.Exists(ebookPath)) Directory.CreateDirectory(ebookPath);
+            if (ebookFile == null || ebookFile.Length == 0)
+                return BadRequest("No PDF file selected.");
 
-            string fileName = $"{Guid.NewGuid()}{Path.GetExtension(ebookFile.FileName)}";
-            string fullPath = Path.Combine(ebookPath, fileName);
-            using (var stream = new FileStream(fullPath, FileMode.Create))
+            var ebookDir = Path.Combine(_hostEnvironment.WebRootPath, "uploads/ebooks");
+            Directory.CreateDirectory(ebookDir);
+
+            var userID = HttpContext.Session.GetString("UserID") ?? "Admin";
+
+            // Save e-book file to disk
+            string ebookFileName = $"{Guid.NewGuid()}{Path.GetExtension(ebookFile.FileName)}";
+            string ebookFullPath = Path.Combine(ebookDir, ebookFileName);
+            using (var stream = new FileStream(ebookFullPath, FileMode.Create))
             {
                 await ebookFile.CopyToAsync(stream);
             }
-
-            string dbFilePath = $"/uploads/ebooks/{fileName}";
+            string ebookDbPath = $"/uploads/ebooks/{ebookFileName}";
 
             bool success = await _dbHelper.SaveEBookAsync(
                 title,
                 category,
                 authors,
                 description,
-                dbFilePath,
-                ebookCoverImage,
-                userID ?? ""
+                ebookDbPath,
+                ebookCoverImage, // 👈 pass IFormFile here
+                userID
             );
 
-            return success ? Ok("E-Book saved successfully!") : BadRequest("Failed to save e-book.");
+            return success
+                ? Json(new { success = true, message = "✅ E-Book uploaded successfully!" })
+                : Json(new { success = false, message = "❌ Failed to upload e-book." });
+        }
+
+        [RequestSizeLimit(209_715_200)]
+        [RequestFormLimits(MultipartBodyLengthLimit = 209_715_200)]
+        [HttpPost]
+        public async Task<IActionResult> UpdateEbook(
+        int ebookId,
+        IFormFile? ebookFile,
+        IFormFile? ebookCoverImage,
+        string? existingFilePath,
+        string title,
+        string category,
+        string authors,
+        string description)
+        {
+            var ebookDir = Path.Combine(_hostEnvironment.WebRootPath, "uploads/ebooks");
+            Directory.CreateDirectory(ebookDir);
+
+            var userID = HttpContext.Session.GetString("UserID") ?? "Admin";
+
+            // Update or keep old ebook path
+            string ebookDbPath = existingFilePath ?? string.Empty;
+            if (ebookFile != null)
+            {
+                string ebookFileName = $"{Guid.NewGuid()}{Path.GetExtension(ebookFile.FileName)}";
+                string ebookFullPath = Path.Combine(ebookDir, ebookFileName);
+                using (var stream = new FileStream(ebookFullPath, FileMode.Create))
+                {
+                    await ebookFile.CopyToAsync(stream);
+                }
+                ebookDbPath = $"/uploads/ebooks/{ebookFileName}";
+            }
+
+            bool success = await _dbHelper.UpdateEBookAsync(
+                ebookId,
+                title,
+                category,
+                authors,
+                description,
+                ebookDbPath,
+                ebookCoverImage, // 👈 pass IFormFile here
+                userID
+            );
+
+            return success
+                ? Json(new { success = true, message = " E-Book updated successfully!" })
+                : Json(new { success = false, message = "Failed to update e-book." });
         }
 
         [HttpGet]
@@ -449,8 +509,62 @@ namespace OnShelfGTDL.Controllers
             return PhysicalFile(fullPath, "application/pdf");
         }
 
+        [HttpGet]
+        public IActionResult ManageEBooks()
+        {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserID")))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            ViewData["ModuleName"] = "Manage Books";
+            List<EBookModelView> books = _dbHelper.GetAllEBooks();
+            return View(books);
+        }
+
+        public IActionResult LoadEBooks()
+        {
+            var ebooks = _dbHelper.GetAllEBooks();
+
+            var formattedEbooks = ebooks.Select(e => new
+            {
+                e.EbookID,
+                e.Title,
+                e.Category,
+                e.Authors,
+                e.Description,
+                e.EbookFilePath,
+                e.UploadedBy,
+                e.DateUploaded,
+
+                CoverImage = (e.CoverImage != null && e.CoverImage.Length > 0)
+                    ? $"data:{e.CoverImageType};base64,{Convert.ToBase64String(e.CoverImage)}"
+                    : null
+            });
+
+            return Json(formattedEbooks);
+        }
 
 
+
+        [HttpPost]
+        public IActionResult DeleteEBook(int id)
+        {
+            if (id == null)
+            {
+                return BadRequest("Id is required.");
+            }
+
+            bool isDeleted = _dbHelper.DeleteEBook(id);
+
+            if (isDeleted)
+            {
+                return Json(new { success = true, message = "Book deleted successfully." });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Failed to delete the book." });
+            }
+        }
     }
 }
 
